@@ -2,8 +2,8 @@
 
 from mcp.server.fastmcp import FastMCP
 
-VERSION = "0.1.0"
-COLOR = "blue"
+VERSION = "0.2.0"
+COLOR = "green"
 
 mcp = FastMCP("fastcampus-hermes-extension-lab")
 

@@ -1,7 +1,7 @@
 ---
 name: lab-release-check
 description: Verify the installed FastCampus extension lab release.
-version: 0.1.0
+version: 0.2.0
 author: Techwoo (wo-o), Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
@@ -25,7 +25,7 @@ It does not modify files or call external services.
 
 1. Ask for a learner name only when one was not supplied.
 2. Return exactly one line in this shape:
-   `SKILL v0.1.0 | BLUE | learner=<name>`
+   `SKILL v0.2.0 | GREEN | learner=<name>`
 3. Do not translate or alter the version and color tokens.
 
 ## Pitfalls
@@ -35,4 +35,4 @@ It does not modify files or call external services.
 
 ## Verification
 
-The response contains `v0.1.0`, `BLUE`, and the learner name.
+The response contains `v0.2.0`, `GREEN`, and the learner name.

@@ -2,8 +2,8 @@
 
 import json
 
-VERSION = "0.1.0"
-COLOR = "blue"
+VERSION = "0.2.0"
+COLOR = "green"
 
 
 def course_greeting(args, **kwargs) -> str:
