@@ -3,7 +3,7 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [project]
-name = "fastcampus-hermes-extension-lab"
+name = "hermes-workshop-mcp"
 version = "0.2.0"
 description = "A tiny stdio MCP server for Hermes extension training"
 readme = "README.md"
@@ -13,10 +13,10 @@ authors = [{ name = "Techwoo" }]
 dependencies = ["mcp>=1.9,<2"]
 
 [project.scripts]
-fastcampus-hermes-lab-mcp = "fastcampus_hermes_lab.server:main"
+hermes-workshop-mcp = "hermes_workshop_mcp.server:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/fastcampus_hermes_lab"]
+packages = ["src/hermes_workshop_mcp"]
 
 [tool.pytest.ini_options]
 pythonpath = [".", "src"]

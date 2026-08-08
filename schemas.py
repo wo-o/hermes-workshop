@@ -3,7 +3,7 @@
 COURSE_GREETING = {
     "name": "course_greeting",
     "description": (
-        "Return a deterministic FastCampus course greeting with the installed "
+        "Return a deterministic Hermes workshop greeting with the installed "
         "plugin version. Use it when verifying this demo plugin installation."
     ),
     "parameters": {

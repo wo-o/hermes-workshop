@@ -18,7 +18,7 @@ def course_greeting(args, **kwargs) -> str:
                 "component": "plugin",
                 "version": VERSION,
                 "color": COLOR,
-                "message": f"Hello, {name}! FastCampus extension lab is ready.",
+                "message": f"Hello, {name}! Hermes workshop is ready.",
             }
         )
     except Exception as exc:

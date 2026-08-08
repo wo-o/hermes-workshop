@@ -4,7 +4,7 @@ A public, dependency-light training repository that demonstrates three different
 
 1. `skills/lab-release-check` — an installable Hermes skill.
 2. Repository root — a native Hermes plugin exposing `course_greeting`.
-3. `fastcampus-hermes-lab-mcp` — a stdio MCP server exposing `lab_status`.
+3. `hermes-workshop-mcp` — a stdio MCP server exposing `lab_status`.
 
 The components intentionally return a visible version and color marker so a class can prove that an upstream update reached each installation path.
 
@@ -30,7 +30,7 @@ Start a new session or run `/reload-skills`, then invoke `/lab-release-check Tec
 ```bash
 hermes plugins install wo-o/hermes-workshop --enable
 hermes plugins list --user
-hermes plugins update fastcampus-extension-lab
+hermes plugins update workshop-greeting
 ```
 
 Restart the Hermes CLI or gateway after install/update. Ask Hermes to call `course_greeting` for `Techwoo`.
@@ -40,13 +40,13 @@ Restart the Hermes CLI or gateway after install/update. Ask Hermes to call `cour
 Register the public Git repository as a stdio launcher. `--refresh` makes `uvx` re-resolve the branch when the MCP process starts.
 
 ```bash
-hermes mcp add fastcampus_lab --command uvx --connect-timeout 120 \
+hermes mcp add workshop_lab --command uvx --connect-timeout 120 \
   --args --refresh --from git+https://github.com/wo-o/hermes-workshop.git \
-  fastcampus-hermes-lab-mcp
-hermes mcp test fastcampus_lab
+  hermes-workshop-mcp
+hermes mcp test workshop_lab
 ```
 
-After an upstream update, run `hermes mcp test fastcampus_lab` again and reload MCP tools in the active session with `/reload-mcp`.
+After an upstream update, run `hermes mcp test workshop_lab` again and reload MCP tools in the active session with `/reload-mcp`.
 
 ## Local verification
 
@@ -59,9 +59,9 @@ uv build
 
 ```bash
 hermes skills uninstall lab-release-check
-hermes plugins disable fastcampus-extension-lab
-hermes plugins remove fastcampus-extension-lab
-hermes mcp remove fastcampus_lab
+hermes plugins disable workshop-greeting
+hermes plugins remove workshop-greeting
+hermes mcp remove workshop_lab
 ```
 
 ## Security boundary

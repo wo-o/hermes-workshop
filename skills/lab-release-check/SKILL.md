@@ -1,13 +1,13 @@
 ---
 name: lab-release-check
-description: Verify the installed FastCampus extension lab release.
+description: Verify the installed Hermes workshop release.
 version: 0.2.0
 author: Techwoo (wo-o), Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
 metadata:
   hermes:
-    tags: [fastcampus, demo, release-check]
+    tags: [hermes, workshop, release-check]
     related_skills: []
 ---
 
@@ -18,7 +18,7 @@ It does not modify files or call external services.
 
 ## When to Use
 
-- The user asks to verify the FastCampus extension lab skill.
+- The user asks to verify the Hermes workshop skill.
 - The class is demonstrating skill installation or update behavior.
 
 ## Procedure

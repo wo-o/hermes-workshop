@@ -1,6 +1,6 @@
-name: fastcampus-extension-lab
+name: workshop-greeting
 version: 0.2.0
-description: FastCampus demo plugin that returns a versioned course greeting.
+description: Reusable demo plugin that returns a versioned workshop greeting.
 author: Techwoo (wo-o), Hermes Agent
 provides_tools:
   - course_greeting

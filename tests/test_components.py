@@ -2,7 +2,7 @@ import importlib.util
 import json
 from pathlib import Path
 
-from fastcampus_hermes_lab.server import get_lab_status
+from hermes_workshop_mcp.server import get_lab_status
 
 
 ROOT = Path(__file__).parents[1]
@@ -22,7 +22,7 @@ def test_plugin_greeting_reports_v02():
         "component": "plugin",
         "version": "0.2.0",
         "color": "green",
-        "message": "Hello, Hermes! FastCampus extension lab is ready.",
+        "message": "Hello, Hermes! Hermes workshop is ready.",
     }
 
 

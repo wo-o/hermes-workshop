@@ -1,11 +1,11 @@
-"""Minimal stdio MCP server used in the FastCampus update lab."""
+"""Minimal stdio MCP server used in the Hermes workshop."""
 
 from mcp.server.fastmcp import FastMCP
 
 VERSION = "0.2.0"
 COLOR = "green"
 
-mcp = FastMCP("fastcampus-hermes-extension-lab")
+mcp = FastMCP("hermes-workshop")
 
 
 def get_lab_status(learner: str = "student") -> dict[str, str]:
@@ -22,7 +22,7 @@ def get_lab_status(learner: str = "student") -> dict[str, str]:
 
 @mcp.tool()
 def lab_status(learner: str = "student") -> dict[str, str]:
-    """Report the installed FastCampus MCP lab version and status."""
+    """Report the installed Hermes workshop MCP version and status."""
     return get_lab_status(learner)
 
 
