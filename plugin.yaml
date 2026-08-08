@@ -1,0 +1,6 @@
+name: fastcampus-extension-lab
+version: 0.1.0
+description: FastCampus demo plugin that returns a versioned course greeting.
+author: Techwoo (wo-o), Hermes Agent
+provides_tools:
+  - course_greeting
