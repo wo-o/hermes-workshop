@@ -1,4 +1,4 @@
-# FastCampus Hermes Extension Lab
+# Hermes Workshop
 
 A public, dependency-light training repository that demonstrates three different Hermes extension paths from one upstream Git repository:
 
@@ -17,8 +17,8 @@ The components intentionally return a visible version and color marker so a clas
 ## Skill
 
 ```bash
-hermes skills inspect wo-o/fastcampus-hermes-extension-lab/skills/lab-release-check
-hermes skills install wo-o/fastcampus-hermes-extension-lab/skills/lab-release-check --yes
+hermes skills inspect wo-o/hermes-workshop/skills/lab-release-check
+hermes skills install wo-o/hermes-workshop/skills/lab-release-check --yes
 hermes skills check lab-release-check
 hermes skills update lab-release-check
 ```
@@ -28,7 +28,7 @@ Start a new session or run `/reload-skills`, then invoke `/lab-release-check Tec
 ## Native plugin
 
 ```bash
-hermes plugins install wo-o/fastcampus-hermes-extension-lab --enable
+hermes plugins install wo-o/hermes-workshop --enable
 hermes plugins list --user
 hermes plugins update fastcampus-extension-lab
 ```
@@ -41,7 +41,7 @@ Register the public Git repository as a stdio launcher. `--refresh` makes `uvx` 
 
 ```bash
 hermes mcp add fastcampus_lab --command uvx --connect-timeout 120 \
-  --args --refresh --from git+https://github.com/wo-o/fastcampus-hermes-extension-lab.git \
+  --args --refresh --from git+https://github.com/wo-o/hermes-workshop.git \
   fastcampus-hermes-lab-mcp
 hermes mcp test fastcampus_lab
 ```
