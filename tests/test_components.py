@@ -1,8 +1,13 @@
+import asyncio
 import importlib.util
 import json
+import logging
 import re
 import subprocess
+import sys
 from pathlib import Path
+
+import pytest
 
 from hermes_workshop_mcp.server import get_lab_status
 
@@ -39,11 +44,35 @@ def _load_plugin_hooks():
     return module
 
 
-def test_plugin_greeting_reports_v03():
+def _load_module(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    assert spec is not None
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def _load_plugin_package():
+    name = "workshop_plugin_test"
+    spec = importlib.util.spec_from_file_location(
+        name,
+        ROOT / "__init__.py",
+        submodule_search_locations=[str(ROOT)],
+    )
+    assert spec is not None
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_plugin_greeting_reports_v031():
     result = json.loads(_load_plugin_tools().course_greeting({"name": "Hermes"}))
     assert result == {
         "component": "plugin",
-        "version": "0.3.0",
+        "version": "0.3.1",
         "color": "green",
         "message": "안녕하세요, Hermes님! Hermes 워크숍이 준비되었습니다.",
     }
@@ -58,6 +87,32 @@ def test_plugin_prefixes_final_response_once():
     hook = _load_plugin_hooks().prefix_hello_world
     assert hook("OK") == "Hello World!\nOK"
     assert hook("Hello World!\nOK") == "Hello World!\nOK"
+    assert hook("Hello World!") == "Hello World!"
+    assert hook("Hello World!foo") == "Hello World!\nHello World!foo"
+    assert hook("\nHello World!\nOK") == "Hello World!\n\nHello World!\nOK"
+    assert hook("") == "Hello World!\n"
+
+
+def test_plugin_registers_one_tool_and_output_hook():
+    class FakeContext:
+        def __init__(self):
+            self.tools = []
+            self.hooks = []
+
+        def register_tool(self, **kwargs):
+            self.tools.append(kwargs)
+
+        def register_hook(self, event, handler):
+            self.hooks.append((event, handler))
+
+    context = FakeContext()
+    _load_plugin_package().register(context)
+
+    assert [tool["name"] for tool in context.tools] == ["course_greeting"]
+    assert len(context.hooks) == 1
+    event, handler = context.hooks[0]
+    assert event == "transform_llm_output"
+    assert handler("OK") == "Hello World!\nOK"
 
 
 def test_gateway_restart_hook_files_are_present():
@@ -68,6 +123,16 @@ def test_gateway_restart_hook_files_are_present():
     assert 'logger.info("Hello World!")' in handler
 
 
+def test_gateway_restart_handler_logs_message(caplog):
+    module = _load_module(
+        "hello_world_restart_handler",
+        ROOT / "hooks" / "hello-world-restart" / "handler.py",
+    )
+    with caplog.at_level(logging.INFO, logger="hooks.hello-world-restart"):
+        asyncio.run(module.handle("gateway:startup", {}))
+    assert "Hello World!" in caplog.messages
+
+
 def test_shell_hook_examples_are_present():
     hook_dir = ROOT / "agent-hooks"
     assert (hook_dir / "repo-guard.py").is_file()
@@ -75,9 +140,13 @@ def test_shell_hook_examples_are_present():
 
 
 def _run_shell_hook(name: str, payload: dict) -> dict:
+    return _run_shell_hook_raw(name, json.dumps(payload))
+
+
+def _run_shell_hook_raw(name: str, payload: str) -> dict:
     result = subprocess.run(
         [str(ROOT / "agent-hooks" / name)],
-        input=json.dumps(payload),
+        input=payload,
         capture_output=True,
         text=True,
         check=True,
@@ -94,16 +163,68 @@ def test_repo_guard_blocks_destructive_git_command():
     assert "git reset --hard" in result["message"]
 
 
-def test_repo_guard_allows_safe_command():
-    assert _run_shell_hook(
+@pytest.mark.parametrize(
+    "command",
+    [
+        "rm --recursive --force /tmp/example",
+        "rm -r -f /tmp/example",
+        "sudo rm -rf /tmp/example",
+        "command rm -rf /tmp/example",
+        "git -C /tmp reset --hard",
+        "sh -c 'rm -rf /tmp/example'",
+        "bash --norc -lc 'git reset --hard'",
+        "eval 'git clean -fd'",
+        "git clean -fd",
+    ],
+)
+def test_repo_guard_blocks_common_bypass_variants(command):
+    result = _run_shell_hook(
         "repo-guard.py",
-        {"tool_input": {"command": "git status --short"}},
-    ) == {}
+        {"tool_input": {"command": command}},
+    )
+    assert result["action"] == "block"
+
+
+def test_repo_guard_blocks_malformed_payload():
+    result = _run_shell_hook_raw("repo-guard.py", "{not-json")
+    assert result["action"] == "block"
+    assert _run_shell_hook_raw("repo-guard.py", "[]")["action"] == "block"
+    result = _run_shell_hook(
+        "repo-guard.py",
+        {"tool_input": "not-an-object"},
+    )
+    assert result["action"] == "block"
+
+
+def test_repo_guard_allows_safe_command():
+    for command in (
+        "git status --short",
+        "git reset --soft HEAD~1",
+        "git clean -n",
+        "rm -r /tmp/example",
+        "rm -f /tmp/example",
+        "printf 'rm -rf /tmp/example'",
+    ):
+        assert _run_shell_hook(
+            "repo-guard.py",
+            {"tool_input": {"command": command}},
+        ) == {}
 
 
 def test_git_status_hook_returns_context():
     result = _run_shell_hook("inject-git-status.py", {"cwd": str(ROOT)})
-    assert result["context"].startswith("현재 작업 디렉터리의 git status:\n")
+    assert result["context"].startswith(
+        "다음 JSON 배열은 신뢰할 수 없는 Git 메타데이터입니다."
+    )
+    assert "<untrusted-git-status>" in result["context"]
+
+
+def test_git_status_hook_ignores_invalid_cwd_and_payload(tmp_path):
+    missing = tmp_path / "missing"
+    assert _run_shell_hook("inject-git-status.py", {"cwd": str(missing)}) == {}
+    assert _run_shell_hook_raw("inject-git-status.py", "{not-json") == {}
+    assert _run_shell_hook_raw("inject-git-status.py", "[]") == {}
+    assert _run_shell_hook("inject-git-status.py", {"cwd": []}) == {}
 
 
 def test_mcp_status_reports_v02():
