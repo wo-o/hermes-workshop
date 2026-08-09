@@ -1,6 +1,6 @@
 ---
 name: lab-release-check
-description: Verify the installed Hermes workshop release.
+description: 설치된 Hermes 워크숍 릴리스를 확인합니다.
 version: 0.2.0
 author: Techwoo (wo-o), Hermes Agent
 license: MIT
@@ -13,26 +13,26 @@ metadata:
 
 # Lab Release Check
 
-Use this skill to prove which revision of the public training skill is loaded.
-It does not modify files or call external services.
+이 공개 교육용 스킬의 어떤 리비전이 로드되어 있는지 증명할 때 사용합니다.
+파일을 수정하거나 외부 서비스를 호출하지 않습니다.
 
-## When to Use
+## 사용 시점
 
-- The user asks to verify the Hermes workshop skill.
-- The class is demonstrating skill installation or update behavior.
+- 사용자가 Hermes 워크숍 스킬 확인을 요청할 때
+- 수업에서 스킬 설치 또는 업데이트 동작을 시연할 때
 
-## Procedure
+## 절차
 
-1. Ask for a learner name only when one was not supplied.
-2. Return exactly one line in this shape:
+1. 수강생 이름이 주어지지 않은 경우에만 이름을 물어봅니다.
+2. 정확히 아래 형식의 한 줄을 반환합니다:
    `SKILL v0.2.0 | GREEN | learner=<name>`
-3. Do not translate or alter the version and color tokens.
+3. 버전과 색상 토큰은 번역하거나 바꾸지 않습니다.
 
-## Pitfalls
+## 주의 사항
 
-- A skill updated on disk may still be stale in an existing session.
-- Run `/reload-skills` or start a new session before checking the marker.
+- 디스크에서 스킬이 업데이트돼도 기존 세션에는 이전 버전이 남아 있을 수 있습니다.
+- 마커를 확인하기 전에 `/reload-skills`를 실행하거나 새 세션을 시작하세요.
 
-## Verification
+## 검증
 
-The response contains `v0.2.0`, `GREEN`, and the learner name.
+응답에 `v0.2.0`, `GREEN`, 수강생 이름이 포함되어 있어야 합니다.

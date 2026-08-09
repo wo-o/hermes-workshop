@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "hermes-workshop-mcp"
 version = "0.2.0"
-description = "A tiny stdio MCP server for Hermes extension training"
+description = "Hermes 확장 교육용 초소형 stdio MCP 서버"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

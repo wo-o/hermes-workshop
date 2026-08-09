@@ -1,10 +1,10 @@
-"""Native Hermes plugin registration entry point."""
+"""네이티브 Hermes 플러그인 등록 진입점."""
 
 from . import schemas, tools
 
 
 def register(ctx):
-    """Register the demo tool when Hermes loads this plugin."""
+    """Hermes가 이 플러그인을 로드할 때 데모 도구를 등록한다."""
     ctx.register_tool(
         name="course_greeting",
         toolset="workshop-greeting",
