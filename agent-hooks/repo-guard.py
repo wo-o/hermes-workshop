@@ -62,9 +62,32 @@ def _classify_segment(tokens: list[str]) -> str | None:
     return None
 
 
+def _classify_expansion(command: str, tokens: list[str]) -> str | None:
+    """Block destructive flags paired with dynamic shell expansion."""
+    if not any(marker in command for marker in ("$", "`")):
+        return None
+
+    recursive = (
+        "--recursive" in tokens
+        or _has_short_option(tokens, "r")
+        or _has_short_option(tokens, "R")
+    )
+    forced = "--force" in tokens or _has_short_option(tokens, "f")
+    if recursive and forced:
+        return "dynamic shell expansion with recursive force flags"
+    if "--hard" in tokens:
+        return "dynamic shell expansion with --hard"
+    if "clean" in tokens and forced:
+        return "dynamic shell expansion with forced git clean"
+    return None
+
+
 def classify_dangerous(command: str) -> str | None:
     """Return a conservative label for common destructive command variants."""
     tokens = _tokenize(command)
+    expansion_label = _classify_expansion(command, tokens)
+    if expansion_label:
+        return expansion_label
     for segment in _segments(tokens):
         label = _classify_segment(segment)
         if label:
@@ -116,8 +139,10 @@ def main() -> int:
         _block("repo-guard가 객체가 아닌 Hook payload를 차단했습니다")
         return 0
 
-    tool_input = payload.get("tool_input") or {}
-    if not isinstance(tool_input, dict):
+    tool_input = payload.get("tool_input")
+    if tool_input is None:
+        tool_input = {}
+    elif not isinstance(tool_input, dict):
         _block("repo-guard가 잘못된 terminal tool_input을 차단했습니다")
         return 0
     command = tool_input.get("command", "")

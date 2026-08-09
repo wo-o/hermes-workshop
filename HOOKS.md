@@ -162,7 +162,7 @@ rm "$HERMES_HOME/agent-hooks/repo-guard.py"
 
 ## 5. Shell Hook: Git 상태 컨텍스트 주입
 
-`pre_llm_call`은 Claude Code의 `UserPromptSubmit`에 가까운 위치에서 실행됩니다. 다음 예제는 현재 작업 디렉터리가 Git 저장소일 때 `git status --short --branch`를 매 턴의 임시 사용자 컨텍스트에 추가합니다. 출력은 최대 100줄·8,000자로 제한합니다.
+`pre_llm_call`은 Claude Code의 `UserPromptSubmit`에 가까운 위치에서 실행됩니다. 다음 예제는 현재 작업 디렉터리가 Git 저장소일 때 `git status --short --branch`를 매 턴의 임시 사용자 컨텍스트에 추가합니다. 출력은 최대 100줄·8,000자로 제한하고, 경계 문자열 탈출을 막기 위해 Git 메타데이터를 Base64로 인코딩합니다.
 
 ```bash
 cp agent-hooks/inject-git-status.py "$HERMES_HOME/agent-hooks/"
@@ -208,4 +208,5 @@ rm "$HERMES_HOME/agent-hooks/inject-git-status.py"
 - 공개 Hook이나 Plugin을 활성화하기 전에 `HOOK.yaml`, `handler.py`, `plugin.yaml`, `__init__.py`, 실행 스크립트를 검토하세요.
 - Secret 값이나 전체 명령 인자를 로그에 남기지 마세요.
 - `repo-guard`는 패턴 기반 보조 장치이며 OS 권한, 승인 정책, 격리 환경을 대체하지 않습니다.
+- Shell expansion, alias, 별도 인터프리터 등을 이용하면 모든 파괴적 명령을 정적으로 판별할 수 없습니다. 예제는 위험 옵션과 결합된 일반적인 `$`/backtick expansion을 추가로 차단하지만 완전한 명령 분석기는 아닙니다.
 - Git 브랜치명과 파일명도 공격자가 제어할 수 있는 입력입니다. `inject-git-status.py`는 이를 명시적으로 신뢰할 수 없는 JSON 데이터로 표시하지만, 민감한 저장소에서는 Hook을 활성화하기 전에 출력 범위와 신뢰 경계를 다시 검토하세요.
