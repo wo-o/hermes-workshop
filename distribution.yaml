@@ -1,0 +1,10 @@
+name: hermes-workshop
+version: 0.4.0
+description: "Hermes Agent 확장 기능과 Kanban 협업을 실습하는 교육용 프로필"
+hermes_requires: ">=0.20.0"
+author: "Techwoo (wo-o)"
+license: "MIT"
+distribution_owned:
+  - SOUL.md
+  - skills/
+  - distribution.yaml

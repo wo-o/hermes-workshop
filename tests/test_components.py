@@ -20,6 +20,7 @@ WORKSHOP_SKILLS = {
     "tdd-feature-workflow",
     "github-issue-spec",
     "verified-readme",
+    "kanban-service-planning",
 }
 
 
@@ -295,6 +296,43 @@ def test_skill_workshop_inputs_are_present():
     assert (lab / "discount.py").is_file()
     assert (lab / "test_discount.py").is_file()
     assert (lab / "email_validator.py").is_file()
+
+
+def test_profile_distribution_manifest_and_content_are_present():
+    manifest = (ROOT / "distribution.yaml").read_text()
+    assert "name: hermes-workshop" in manifest
+    assert "version: 0.4.0" in manifest
+    assert 'hermes_requires: ">=0.20.0"' in manifest
+    assert "  - SOUL.md" in manifest
+    assert "  - skills/" in manifest
+    assert "  - distribution.yaml" in manifest
+    assert (ROOT / "SOUL.md").is_file()
+    assert (
+        ROOT
+        / "skills"
+        / "kanban-service-planning"
+        / "references"
+        / "lab.md"
+    ).is_file()
+
+
+def test_kanban_guide_has_setup_dependencies_verification_and_cleanup():
+    guide = (
+        ROOT / "skills" / "kanban-service-planning" / "references" / "lab.md"
+    ).read_text()
+    required = [
+        "hermes profile create infra-planner",
+        "hermes profile create ops-planner",
+        "hermes profile create plan-reviewer",
+        "hermes kanban boards create service-plan-lab",
+        "--parent <INFRA_ID>",
+        "--parent <OPS_ID>",
+        "hermes kanban dispatch --max 2",
+        "hermes kanban runs <FINAL_ID>",
+        "hermes kanban boards rm service-plan-lab --delete",
+    ]
+    assert all(command in guide for command in required)
+    assert "실제 클라우드·서버·모니터링 시스템은 생성하거나 조회하지 않는다" in guide
 
 
 def test_hooks_guide_does_not_claim_fail_closed_support():
