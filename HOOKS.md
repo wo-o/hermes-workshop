@@ -10,7 +10,7 @@
 | Plugin Hook | `ctx.register_hook(...)` | CLI + Gateway | 아니요 (`hermes plugins list` 사용) |
 | Shell Hook | `config.yaml`의 `hooks:` | CLI + Gateway | 예 |
 
-`hermes hooks list`, `test`, `doctor`는 Shell Hook과 Outbound Webhook을 관리하는 CLI입니다. 이름이 비슷하지만 Gateway Hook이나 Plugin Hook의 전체 목록을 보여주는 명령은 아닙니다.
+`hermes hooks list`는 Shell Hook과 Outbound Webhook을 표시하고, `test`와 `doctor`는 Shell Hook을 검사합니다. 이름이 비슷하지만 Gateway Hook이나 Plugin Hook의 전체 목록을 보여주는 명령은 아닙니다.
 
 아래 명령은 활성 프로필의 Hermes 홈을 사용합니다. 별도 프로필을 사용한다면 그 프로필을 가리키도록 `HERMES_HOME`을 먼저 설정하세요.
 
@@ -121,12 +121,19 @@ hooks:
     - matcher: terminal
       command: /absolute/path/to/HERMES_HOME/agent-hooks/repo-guard.py
       timeout: 5
-      fail_closed: true
 ```
 
 `hermes config set`은 현재 JSON 배열 문자열을 YAML list로 변환하지 않습니다. `hooks.pre_tool_call` 전체를 JSON 문자열로 설정하면 Hook이 등록되지 않으므로 이 구조에는 `hermes config edit`을 사용합니다.
 
 `command`에는 `printf '%s\n' "$HERMES_HOME"`으로 확인한 실제 절대 경로를 넣으세요. Shell Hook 명령은 shell 없이 실행되므로 YAML의 `$HERMES_HOME`이나 `~`가 자동 확장된다고 가정하지 않습니다.
+
+설정 저장 직후 구조를 검사합니다.
+
+```bash
+hermes config check
+```
+
+중요: Hermes v0.20.0의 Shell Hook에는 `fail_closed` 설정이 없습니다. 실행 파일 누락, timeout, 잘못된 출력 등으로 Hook이 실패하면 terminal 호출을 자동으로 차단하지 않습니다. 따라서 `repo-guard`를 보안 게이트로 사용하면 안 됩니다.
 
 처음 등록할 때는 대화형 승인을 받거나 명시적으로 승인합니다.
 

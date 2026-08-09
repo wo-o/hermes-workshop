@@ -53,7 +53,7 @@ hermes hooks doctor
 
 ## MCP 서버
 
-공개 Git 리포지토리를 stdio 런처로 등록합니다. `--refresh` 옵션을 주면 MCP 프로세스가 시작될 때 `uvx`가 브랜치를 다시 확인합니다.
+Git 리포지토리를 stdio 런처로 등록합니다. `--refresh` 옵션을 주면 MCP 프로세스가 시작될 때 `uvx`가 브랜치를 다시 확인합니다. 비공개 저장소라면 실행 환경에도 해당 저장소를 읽을 GitHub 인증이 필요합니다.
 
 ```bash
 hermes mcp add workshop_lab --command uvx --connect-timeout 120 \

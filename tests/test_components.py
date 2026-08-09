@@ -271,3 +271,9 @@ def test_skill_workshop_inputs_are_present():
     assert (lab / "discount.py").is_file()
     assert (lab / "test_discount.py").is_file()
     assert (lab / "email_validator.py").is_file()
+
+
+def test_hooks_guide_does_not_claim_fail_closed_support():
+    guide = (ROOT / "HOOKS.md").read_text()
+    assert "fail_closed:" not in guide
+    assert "Shell Hook에는 `fail_closed` 설정이 없습니다" in guide
