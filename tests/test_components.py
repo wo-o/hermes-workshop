@@ -15,6 +15,7 @@ from hermes_workshop_mcp.server import get_lab_status
 ROOT = Path(__file__).parents[1]
 
 WORKSHOP_SKILLS = {
+    "hello",
     "meeting-action-items",
     "systematic-bug-fix",
     "tdd-feature-workflow",
@@ -273,6 +274,12 @@ def test_skill_marker_reports_v02():
     content = (ROOT / "skills" / "lab-release-check" / "SKILL.md").read_text()
     assert "version: 0.2.0" in content
     assert "SKILL v0.2.0 | GREEN" in content
+
+
+def test_hello_skill_returns_the_requested_greeting_format():
+    content = (ROOT / "skills" / "hello" / "SKILL.md").read_text()
+    assert "안녕하세요, {이름}님!" in content
+    assert "이름이 제공되지 않았으면" in content
 
 
 def test_workshop_skills_have_valid_frontmatter_and_sections():

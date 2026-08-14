@@ -1,10 +1,11 @@
 # 스킬 교육 실습
 
-이 폴더에는 같은 요청을 일관된 절차와 품질 기준으로 처리하는 교육용 스킬 6개가 있습니다.
+이 폴더에는 같은 요청을 일관된 절차와 품질 기준으로 처리하는 교육용 스킬 7개가 있습니다.
 
 | 스킬 | 핵심 행동 | 추천 대상 |
 |---|---|---|
 | `lab-release-check` | 설치·업데이트 버전 확인 | 설치 입문 |
+| `hello` | 이름을 받아 정해진 형식의 인사말 출력 | 스킬 입문 |
 | `meeting-action-items` | 회의록에서 근거 있는 실행 항목 추출 | 전 직군 |
 | `systematic-bug-fix` | 재현 → 원인 → 회귀 테스트 → 수정 | 개발자 |
 | `tdd-feature-workflow` | RED → GREEN → REFACTOR | 개발자 |
@@ -17,6 +18,7 @@
 
 ```bash
 hermes skills inspect wo-o/hermes-workshop/skills/meeting-action-items
+hermes skills install wo-o/hermes-workshop/skills/hello --yes
 hermes skills install wo-o/hermes-workshop/skills/meeting-action-items --yes
 hermes skills install wo-o/hermes-workshop/skills/systematic-bug-fix --yes
 hermes skills install wo-o/hermes-workshop/skills/tdd-feature-workflow --yes
@@ -27,6 +29,7 @@ hermes skills install wo-o/hermes-workshop/skills/verified-readme --yes
 설치 후 새 세션을 시작하거나 `/reload-skills`를 실행합니다.
 
 ```bash
+hermes skills check hello
 hermes skills check meeting-action-items
 hermes skills check systematic-bug-fix
 hermes skills check tdd-feature-workflow
@@ -49,7 +52,18 @@ examples/skill-inputs/meeting-notes.md를 정리해줘.
 - 없는 담당자나 기한을 추측하지 않는가
 - 각 항목에 원문 근거가 있는가
 
-### B. 개발자: 버그 수정
+### B. 입문: 정해진 인사말
+
+```text
+hello 스킬을 사용해서 Techwoo에게 인사해줘.
+```
+
+관찰할 점:
+
+- `안녕하세요, Techwoo님!` 한 줄만 출력하는가
+- 이름이 없을 때만 이름을 물어보는가
+
+### C. 개발자: 버그 수정
 
 ```text
 systematic-bug-fix 스킬을 사용해서
@@ -69,7 +83,7 @@ examples/skill-lab/discount.py의 버그를 재현하고 수정해줘.
 git restore examples/skill-lab/discount.py
 ```
 
-### C. 개발자: TDD
+### D. 개발자: TDD
 
 ```text
 tdd-feature-workflow 스킬을 사용해서
@@ -90,7 +104,7 @@ git restore examples/skill-lab/email_validator.py
 git clean -f examples/skill-lab/test_email_validator.py
 ```
 
-### D. 협업: GitHub 이슈 초안
+### E. 협업: GitHub 이슈 초안
 
 ```text
 github-issue-spec 스킬을 사용해서
@@ -104,7 +118,7 @@ examples/skill-inputs/issue-request.md를 GitHub 이슈 초안으로 바꿔줘.
 - 확인하지 않은 파일명이나 담당자를 만들지 않는가
 - 초안 요청인데 외부 쓰기 작업을 하지 않는가
 
-### E. 문서: README 검증
+### F. 문서: README 검증
 
 ```text
 verified-readme 스킬을 사용해서
@@ -133,6 +147,7 @@ MCP: GitHub 같은 외부 시스템의 도구를 연결
 
 ```bash
 hermes skills uninstall meeting-action-items
+hermes skills uninstall hello
 hermes skills uninstall systematic-bug-fix
 hermes skills uninstall tdd-feature-workflow
 hermes skills uninstall github-issue-spec
