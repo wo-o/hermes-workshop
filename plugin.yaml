@@ -1,8 +1,0 @@
-name: workshop-greeting
-version: 0.3.1
-description: 워크숍 인사말 도구와 Hello World 답변 변환 훅을 제공하는 데모 플러그인.
-author: Techwoo (wo-o), Hermes Agent
-provides_tools:
-  - course_greeting
-provides_hooks:
-  - transform_llm_output
