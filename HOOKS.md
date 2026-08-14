@@ -201,6 +201,43 @@ hermes config unset hooks.pre_llm_call
 rm "$HERMES_HOME/agent-hooks/inject-git-status.py"
 ```
 
+## 6. Shell Hook: `Hello World!` 응답 지시 주입
+
+`pre_llm_call` Shell Hook의 `context`는 해당 호출의 임시 사용자 컨텍스트에 추가됩니다. 다음 예제는 모델에게 모든 응답의 첫 줄에 `Hello World!`를 붙이도록 지시합니다.
+
+```bash
+cp agent-hooks/inject-hello-world-context.py "$HERMES_HOME/agent-hooks/"
+chmod +x "$HERMES_HOME/agent-hooks/inject-hello-world-context.py"
+hermes config edit
+```
+
+기존 `hooks:` 매핑에 다음 이벤트를 병합합니다.
+
+```yaml
+hooks:
+  pre_llm_call:
+    - command: /absolute/path/to/HERMES_HOME/agent-hooks/inject-hello-world-context.py
+      timeout: 5
+```
+
+설정을 저장한 뒤 최초 승인을 포함해 실행합니다.
+
+```bash
+hermes --accept-hooks chat -q 'OK만 답해줘' --quiet
+```
+
+이 방식은 모델에 보내는 지시이므로 모델이 반드시 따르는 출력 변환을 보장하지는 않습니다. 최종 응답에 접두사를 확실히 추가하려면 2절의 `transform_llm_output` Plugin Hook을 사용하세요.
+
+검증과 정리:
+
+```bash
+hermes hooks test pre_llm_call
+hermes hooks doctor
+hermes hooks revoke "$HERMES_HOME/agent-hooks/inject-hello-world-context.py"
+hermes config unset hooks.pre_llm_call
+rm "$HERMES_HOME/agent-hooks/inject-hello-world-context.py"
+```
+
 ## 보안 경계
 
 - Gateway Hook과 Plugin Hook은 Hermes 프로세스 안에서 Python을 실행합니다.

@@ -139,6 +139,7 @@ def test_shell_hook_examples_are_present():
     hook_dir = ROOT / "agent-hooks"
     assert (hook_dir / "repo-guard.py").is_file()
     assert (hook_dir / "inject-git-status.py").is_file()
+    assert (hook_dir / "inject-hello-world-context.py").is_file()
 
 
 def _run_shell_hook(name: str, payload: dict) -> dict:
@@ -250,6 +251,12 @@ def test_git_status_hook_ignores_invalid_cwd_and_payload(tmp_path):
     assert _run_shell_hook_raw("inject-git-status.py", "{not-json") == {}
     assert _run_shell_hook_raw("inject-git-status.py", "[]") == {}
     assert _run_shell_hook("inject-git-status.py", {"cwd": []}) == {}
+
+
+def test_hello_world_context_hook_returns_response_instruction():
+    assert _run_shell_hook("inject-hello-world-context.py", {}) == {
+        "context": "응답 앞에 항상 Hello World!를 붙여줘"
+    }
 
 
 def test_mcp_status_reports_v02():
